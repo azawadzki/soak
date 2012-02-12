@@ -29,7 +29,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class ConnectionHandler {
 
 	final static int MAX_RETRY_NUMBER = 5;
-	ConnectionHandler(AccountInfo accountInfo) {
+	public ConnectionHandler(AccountInfo accountInfo) {
 		mAccountInfo = accountInfo;
 		System.setProperty("http.maxRedirects", Integer.toString(MAX_RETRY_NUMBER));
 		Authenticator.setDefault(new Auth());

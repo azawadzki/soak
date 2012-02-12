@@ -17,9 +17,8 @@
 package az.soak;
 
 import java.io.IOException;
-import java.sql.Date;
+import java.util.Date;
 import java.util.Map;
-
 
 public class File extends RemoteElement {
 
@@ -48,7 +47,7 @@ public class File extends RemoteElement {
 		// TODO: cache the url and handle its expiration
 		String path = performPost(getUrl());
 		assert(path.charAt(0) == '/');
-		return AccountInfo.SITE_ROOT + path;
+		return String.format("%s/%s", AccountInfo.getSiteRoot(), path);
 	}
 	
 	@Override

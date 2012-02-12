@@ -24,7 +24,7 @@ import java.util.Map;
 public class Dir extends RemoteElement {
 
 	@SuppressWarnings("rawtypes")
-	public static Dir create(RemoteElement parent, Object objectTree) {
+	static Dir create(RemoteElement parent, Object objectTree) {
 		List l = (List) objectTree;
 		assert(l.size() == 2);
 		String name = (String) l.get(0);
@@ -32,8 +32,10 @@ public class Dir extends RemoteElement {
 		return new Dir(parent, name, urlComponent);
 	}
 
-	protected Dir(RemoteElement parent, String name, String urlComponent) {
+	Dir(RemoteElement parent, String name, String urlComponent) {
 		super(parent, name, urlComponent);
+		mDirs = new ArrayList<Dir>();
+		mFiles = new ArrayList<File>();
 	}
 	
 	public List<Dir> getDirs() {
@@ -51,12 +53,10 @@ public class Dir extends RemoteElement {
 	@SuppressWarnings("rawtypes")
 	@Override
 	protected void initWithData(Object objectTree) {
-		mDirs = new ArrayList<Dir>();
 		List dirElems = (List)((Map)(objectTree)).get("dirs");
 		for (Object o: dirElems) {
 			mDirs.add(Dir.create(this, o));
 		}
-		mFiles = new ArrayList<File>();
 		List fileElems = (List)((Map)(objectTree)).get("files");
 		for (Object o: fileElems) {
 			mFiles.add(File.create(this, o));

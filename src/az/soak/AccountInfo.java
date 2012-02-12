@@ -20,11 +20,9 @@ import org.bitpedia.util.Base32;
 
 public class AccountInfo {
 	
-	public final static String SITE_ROOT = "https://spideroak.com";
-	public final static String STORAGE_ROOT = "https://spideroak.com/storage/";
-	public final static String SHARES_ROOT = "https://spideroak.com/share/";
+	private final static String SITE_ROOT = "https://spideroak.com";
 
-	AccountInfo(String userName, String password) {
+	public AccountInfo(String userName, String password) {
 		mUserName = userName;
 		mPassword = password;
 		mEncodedUserName = Base32.encode(mUserName.getBytes());
@@ -34,18 +32,18 @@ public class AccountInfo {
 		return mUserName;
 	}
 	
+	public String getEncodedUserName() {
+		return mEncodedUserName;
+	}
+	
 	public String getPassword() {
 		return mPassword;
 	}
-	
-	public String getStorageUrl() {
-		return String.format("%s%s/", STORAGE_ROOT, mEncodedUserName);
-	}
-	
-	public String getSharesListUrl() {
-		return getStorageUrl() + "shares";
-	}
 
+	public static String getSiteRoot() {
+		return SITE_ROOT;
+	}
+	
 	String mUserName;
 	String mEncodedUserName;
 	String mPassword;
