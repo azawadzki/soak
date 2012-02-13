@@ -20,10 +20,12 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Map;
 
+/** File objects encapsulate files stored on remote server.
+ */
 public class File extends RemoteElement {
 
 	@SuppressWarnings("rawtypes")
-	public static File create(RemoteElement parent, Object objectTree) {
+	static File create(RemoteElement parent, Object objectTree) {
 		Map m = (Map) objectTree;
 		String name = (String) m.get("name");
 		String urlComponent = (String) m.get("url");
@@ -43,12 +45,52 @@ public class File extends RemoteElement {
 		mVersionsNumber = versionsNumber;
 	}
 	
+	/** Fetch URL which lets external, not logged in users, download given file.
+	 * @return URL which permits for external download.
+	 * @throws IOException Thrown if network error occurred when fetching the URL.
+	 */
 	public String getExternalDownloadUrl() throws BadLoginException, IOException {
 		// TODO: cache the url and handle its expiration
-		String path = performPost(getUrl());
-		assert(path.charAt(0) == '/');
-		return String.format("%s/%s", AccountInfo.getSiteRoot(), path);
+		try {
+			String path = performPost(getUrl());
+			assert(path.charAt(0) == '/');
+			return String.format("%s/%s", AccountInfo.getSiteRoot(), path);
+		} catch (BadLoginException e) {
+			// actually, this shouldn't happen as there is no logging in involved.
+			throw new IOException(e);
+		}
 	}
+
+	/** Get file size in bytes.
+	 * @return File size.
+	 */
+	public long getSize() {
+		return mSize;
+	}
+
+	/** Get file creation time.
+	 * @return Creation time.
+	 */
+	public Date getCreationTime() {
+		return mCreationTime;
+	}
+
+	/** Get file modification time.
+	 * @return Modification time.
+	 */
+	public Date getModificationTime() {
+		return mModificationTime;
+	}
+
+	/** Get number of available backup versions of the file.
+	 * Fetching backed up versions is not supported.
+	 * @return Number of backed up file versions.
+	 */
+	public int getVersionsNumber() {
+		return mVersionsNumber;
+	}
+
+	
 	
 	@Override
 	protected void initWithData(Object objectTree) {
@@ -58,22 +100,6 @@ public class File extends RemoteElement {
 	@Override
 	protected boolean containsLoadableContent() {
 		return false;
-	}
-
-	public long getSize() {
-		return mSize;
-	}
-
-	public Date getCreationTime() {
-		return mCreationTime;
-	}
-
-	public Date getModificationTime() {
-		return mModificationTime;
-	}
-
-	public int getVersionsNumber() {
-		return mVersionsNumber;
 	}
 
 	private long mSize;

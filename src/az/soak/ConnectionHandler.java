@@ -26,21 +26,34 @@ import java.util.Scanner;
 
 import javax.net.ssl.HttpsURLConnection;
 
+/** ConnectionHandler objects are used to access SpiderOak server and retrieve data in uniform manner.
+ * The handler uses HTTP-based authentication, cookie-based access is not supported.
+ */
 public class ConnectionHandler {
 
+	// number of times this class will retry connecting SpiderOak servers in case errors.
 	final static int MAX_RETRY_NUMBER = 5;
+	
 	public ConnectionHandler(AccountInfo accountInfo) {
 		mAccountInfo = accountInfo;
 		System.setProperty("http.maxRedirects", Integer.toString(MAX_RETRY_NUMBER));
 		Authenticator.setDefault(new Auth());
 	}
 	
-	class Auth extends Authenticator {
+	private class Auth extends Authenticator {
+		
 		protected PasswordAuthentication getPasswordAuthentication() {
 			return new PasswordAuthentication(mAccountInfo.getUserName(), mAccountInfo.getPassword().toCharArray());
 		}
 	}
 	
+	/** Perform HTTP request of given type with submitted url.
+	 * @param url URL which the request will access.
+	 * @param method Type of request: POST, GET.
+	 * @return Upon completion the method returns data retrieved from the server.
+	 * @throws IOException Thrown if network error occurred or bad method type was used.
+	 * @throws BadLoginException Thrown in case of login/user name mismatch.
+	 */
 	public String performRequest(String url, String method) throws BadLoginException, IOException {
 		URL u = new URL(url);
 		HttpsURLConnection conn = (HttpsURLConnection) u.openConnection();
@@ -55,6 +68,12 @@ public class ConnectionHandler {
 		}
 	}
 
+	/** Get InputStream object which gives access to data designated by URL.
+	 * @param url Address of object to retrieve
+	 * @return Stream which gives access to data designated by URL
+	 * @throws IOException Thrown if network error occurred.
+	 * @throws BadLoginException Thrown in case of login/user name mismatch.
+	 */
 	public InputStream getDownloadStream(String url) throws IOException, BadLoginException {
 		URL u = new URL(url);
 		HttpsURLConnection conn = (HttpsURLConnection) u.openConnection();

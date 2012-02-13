@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+/** Dir objects encapsulate directories stored on remote server.
+ */
 public class Dir extends RemoteElement {
 
 	@SuppressWarnings("rawtypes")
@@ -32,20 +34,29 @@ public class Dir extends RemoteElement {
 		return new Dir(parent, name, urlComponent);
 	}
 
-	Dir(RemoteElement parent, String name, String urlComponent) {
+	private Dir(RemoteElement parent, String name, String urlComponent) {
 		super(parent, name, urlComponent);
 		mDirs = new ArrayList<Dir>();
 		mFiles = new ArrayList<File>();
 	}
 	
+	/** Get a list of subdirectories of given dir.
+	 * @return list of subdirectories.
+	 */
 	public List<Dir> getDirs() {
 		return Collections.unmodifiableList(mDirs);
 	}
 	
+	/** Get a list of files available in current dir.
+	 * @return list of files in dir.
+	 */
 	public List<File> getFiles() {
 		return Collections.unmodifiableList(mFiles);
 	}
 	
+	/** Get a URL which lets one download zipped version of the dir
+	 * @return URL pointing to zipped version of the dir.
+	 */
 	public String getZipUrl() {
 		return getUrl() + "?format=zip";
 	}

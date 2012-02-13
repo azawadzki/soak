@@ -16,74 +16,64 @@
  ******************************************************************************/
 package az.soak;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.json.simple.parser.ParseException;
-
+/** Storage class objects provide access to devices registered on SpiderOak.
+ */
 public class Storage extends RemoteElement {
 	
 	private final static String ROOT = "https://spideroak.com/storage/";
-
-	public static void main(String[] args) throws IOException, ParseException, BadLoginException {
-		AccountInfo accountInfo = new AccountInfo("", "");
-		ConnectionHandler c = new ConnectionHandler(accountInfo);
-		Storage s = new Storage(accountInfo, c);
-		s.loadData();
-		for (Dir d1: s.getDevices()) {
-			System.out.println(d1.getName());
-			d1.loadData();
-			for (Dir d2: d1.getDirs()) {
-				System.out.println("\t" + d2.getName());
-				d2.loadData();
-				for (File f3: d2.getFiles()) {
-					System.out.println("\t\t" + f3.getUrl());
-				}
-			}
-
-		}
-	}
 	
-	public static Storage create(AccountInfo accountInfo, ConnectionHandler connectionHandler) {
-		return new Storage(accountInfo, connectionHandler);
-	}
-	
-	public static String getRoot() {
-		return ROOT;
-	}
-	
+	/** Get SpiderOak API base URL of given user storage.
+	 * @param SpiderOak API storage URL of given user.
+	 */
 	public static String getStorageUrl(AccountInfo accountInfo) {
 		return String.format("%s%s/", ROOT, accountInfo.getEncodedUserName());
 	}
 	
+	/** Create Storage object, which provides access to devices registered on SpiderOak.
+	 * @param accountInfo Authorization data of current user.
+	 * @param connectionHandler Handler which will be used to retrieve underlying data.
+	 */
 	public Storage(AccountInfo accountInfo, ConnectionHandler connectionHandler) {
 		super(null, accountInfo.getUserName(), getStorageUrl(accountInfo));
 		setConnectionHandler(connectionHandler);
 	}
 	
-	private long parseTotalSize(Number totalSize) {
-		return totalSize.longValue() * (long) Math.pow(2, 30);
-	}
-	
+	/** Get a list of devices that user registered on SpiderOak.
+	 * @return List of Dir objects that designate registered devices.
+	 */
 	public List<Dir> getDevices() {
 		return Collections.unmodifiableList(mDevices);
 	}
 
+	/** Get user first name as registered on SpiderOak.
+	 * @return User first name
+	 */
 	public String getFirstName() {
 		return mFirstName;
 	}
-
+	
+	/** Get user last name as registered on SpiderOak.
+	 * @return User last name
+	 */
 	public String getLastName() {
 		return mLastName;
 	}
 
+	/** Get size of available storage space (in bytes).
+	 * @return Total storage space.
+	 */
 	public long getTotalSize() {
 		return mTotalSize;
 	}
 
+	/** Get size of storage space already in use (in bytes).
+	 * @return Storage space in use.
+	 */
 	public long getBackupSize() {
 		return mBackupSize;
 	}
@@ -102,6 +92,10 @@ public class Storage extends RemoteElement {
 		for (Object o: devElems) {
 			mDevices.add(Dir.create(this, o));
 		}
+	}
+	
+	private long parseTotalSize(Number totalSize) {
+		return totalSize.longValue() * (long) Math.pow(2, 30);
 	}
 	
 	private long parseBackupSize(String val) {
@@ -123,7 +117,6 @@ public class Storage extends RemoteElement {
 		}
 		return (long) mantissa * (long) Math.pow(2, powOf2);
 	}
-	
 	
 	// deferred loading
 	List<Dir> mDevices;

@@ -16,62 +16,32 @@
  ******************************************************************************/
 package az.soak;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.json.simple.parser.ParseException;
-
+/** Shares class objects provide access to SpiderOak share rooms.
+ */
 public class Shares extends RemoteElement {
-	
-	public static void main(String[] args) throws IOException, ParseException, BadLoginException {
-		AccountInfo accountInfo = new AccountInfo("", "");
-		ConnectionHandler c = new ConnectionHandler(accountInfo);
-		Shares s = new Shares(accountInfo, c);
-		s.loadData();
-		for (ShareRoom r: s.getShareRooms()) {
-			System.out.println(r.getName());
-			r.loadData();
-			for (Dir d: r.getDirs()) {
-				System.out.println("\t" + d.getName());
-				d.loadData();
-				for (File f: d.getFiles()) {
-					System.out.println("\t\t" + f.getName());
-				}
-				/*
-				InputStream out = c.getDownloadStream(d.getZipUrl());
-				java.io.File fileOutput = new java.io.File("out.zip");
-				System.out.println(d.getZipUrl());
 
-				fileOutput.createNewFile();
-				FileOutputStream fos = new FileOutputStream(fileOutput);
-				int b;
-				while((b = out.read()) != -1)
-				    fos.write(b);
-				fos.close();
-				break;
-*/
-				
-			}
-		}
-	}
-	
-	public static Shares create(AccountInfo accountInfo, ConnectionHandler connectionHandler) {
-		return new Shares(accountInfo, connectionHandler);
-	}
-	
 	private static String getSharesListUrl(AccountInfo accountInfo) {
 		return String.format("%s%s", Storage.getStorageUrl(accountInfo), "shares");
 	}
 
+	/** Create Shares object, which provides access to SpiderOak share rooms
+	 * @param accountInfo Authorization data of current user.
+	 * @param connectionHandler Handler which will be used to retrieve underlying data.
+	 */
 	public Shares(AccountInfo accountInfo, ConnectionHandler connectionHandler) {
 		super(null, accountInfo.getUserName(), getSharesListUrl(accountInfo));
 		setConnectionHandler(connectionHandler);
 		mConnectionHandler = connectionHandler;
 	}
 	
+	/** Get a list of share rooms that user defined on SpiderOak.
+	 * @return List of ShareRoom objects.
+	 */
 	public List<ShareRoom> getShareRooms() {
 		return Collections.unmodifiableList(mShareRooms);
 	}

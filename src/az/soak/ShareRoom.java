@@ -23,12 +23,14 @@ import java.util.Map;
 
 import org.bitpedia.util.Base32;
 
+/** ShareRoom class objects provide access to single share room from list provided by Shares object.
+ */
 public class ShareRoom extends RemoteElement {
 
 	private final static String ROOT = "https://spideroak.com/share/";
 	
 	@SuppressWarnings("rawtypes")
-	public static ShareRoom create(ConnectionHandler connectionHandler, String shareId, Object objectTree) {
+	static ShareRoom create(ConnectionHandler connectionHandler, String shareId, Object objectTree) {
         Map m = (Map) objectTree;
 		String roomKey = (String) m.get("room_key");
 		String url = generateUrl(shareId, roomKey);
@@ -38,10 +40,6 @@ public class ShareRoom extends RemoteElement {
 		return new ShareRoom(connectionHandler, roomName, url, roomKey, roomDescription);
 	}
 	
-	public static ShareRoom create(String path, AccountInfo accountInfo, ConnectionHandler connectionHandler) {
-		return null;
-	}
-	
 	private ShareRoom(ConnectionHandler connectionHandler, String roomName, String url, String roomKey, String roomDescription) {
 		super(null, roomName, url);
 		setConnectionHandler(connectionHandler);
@@ -49,30 +47,51 @@ public class ShareRoom extends RemoteElement {
 		mRoomDescription = roomDescription;
 	}
 	
+	/** Get list of directories available in given share room.
+	 * @return List of directories in share room.
+	 */
 	public List<Dir> getDirs() {
 		return Collections.unmodifiableList(mDirs);
 	}
-	
+
+	/** Get user first name as registered on SpiderOak.
+	 * @return User first name
+	 */
 	public String firstName() {
 		return mFirstName;
 	}
 	
+	/** Get user last name as registered on SpiderOak.
+	 * @return User last name
+	 */
 	public String lastName() {
 		return mLastName;
 	}
 	
+	/** Get total number of folders in share room.
+	 * @return Total number of folders.
+	 */
 	public long getNumberOfFolders() {
 		return mNumberOfFolders;
 	}
 	
+	/** Get total number of files in share room.
+	 * @return Total number of files.
+	 */
 	public long getNumberOfFiles() {
 		return mNumberOfFiles;
 	}
 	
+	/** Get key (id) of the share room.
+	 * @return Share room key.
+	 */
 	public String getRoomKey() {
 		return mRoomKey;
 	}
 	
+	/** Get description of the share room.
+	 * @return Description of the room.
+	 */
 	public String getRoomDescription() {
 		return mRoomDescription;
 	}
@@ -93,13 +112,8 @@ public class ShareRoom extends RemoteElement {
 		}
 	}
 	
-	public static String getRoot() {
-		return ROOT;
-	}
-	
-	
 	private static String generateUrl(String shareId, String roomKey) {
-		return String.format("%s%s/%s/", getRoot(), Base32.encode(shareId.getBytes()), roomKey);
+		return String.format("%s%s/%s/", ROOT, Base32.encode(shareId.getBytes()), roomKey);
 	}
 
 	// available immediately

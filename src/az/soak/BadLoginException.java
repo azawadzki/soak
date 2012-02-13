@@ -16,6 +16,8 @@
  ******************************************************************************/
 package az.soak;
 
+/** Exception class which is thrown whenever provided user name or password were found to be invalid.
+ */
 public class BadLoginException extends Exception {
 
 	private static final long serialVersionUID = 7195189976794835669L;

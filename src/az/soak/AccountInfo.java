@@ -18,28 +18,48 @@ package az.soak;
 
 import org.bitpedia.util.Base32;
 
+/** AccountInfo encapsulates SpiderOak account authorization info.
+ * It's the only class which holds authorization data and is passed
+ * wherever there is a need for user name or password usage.
+ */
 public class AccountInfo {
 	
 	private final static String SITE_ROOT = "https://spideroak.com";
 
+	/** Create AccountInfo object initialized with authorization data.
+	 * @param userName SpiderOak user name
+	 * @param password SpiderOak password of given user.
+	 */
 	public AccountInfo(String userName, String password) {
 		mUserName = userName;
 		mPassword = password;
 		mEncodedUserName = Base32.encode(mUserName.getBytes());
 	}
 	
+	/** Return SpiderOak user name.
+	 * @param User name.
+	 */
 	public String getUserName() {
 		return mUserName;
 	}
 	
+	/** Return Base32-encoded SpiderOak user name.
+	 * @param Base32-encoded user name.
+	 */
 	public String getEncodedUserName() {
 		return mEncodedUserName;
 	}
 	
+	/** Return SpiderOak password of given user.
+	 * @param User password.
+	 */
 	public String getPassword() {
 		return mPassword;
 	}
 
+	/** Get SpiderOak API base URL.
+	 * @param SpiderOak API base URL.
+	 */
 	public static String getSiteRoot() {
 		return SITE_ROOT;
 	}
